@@ -1,5 +1,8 @@
 import { spawn } from 'child_process';
 
+// On macOS with pip install, yt-dlp lands here; in Docker it's on PATH
+const YTDLP_BIN = process.env.YTDLP_BIN ?? 'yt-dlp';
+
 export interface StreamInfo {
   url: string;
   expiresAt: number;
@@ -17,7 +20,7 @@ export interface VideoInfo {
 
 function runYtdlp(args: string[], timeoutMs = 30000): Promise<string> {
   return new Promise((resolve, reject) => {
-    const proc = spawn('yt-dlp', args);
+    const proc = spawn(YTDLP_BIN, args);
     let stdout = '';
     let stderr = '';
 
