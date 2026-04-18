@@ -5,6 +5,7 @@ import streamRouter from './routes/stream';
 import downloadRouter from './routes/download';
 import infoRouter from './routes/info';
 import searchRouter from './routes/search';
+import devicesRouter from './routes/devices';
 import { errorHandler } from './middleware/errorHandler';
 import { getYtdlpVersion } from './utils/ytdlp';
 
@@ -23,6 +24,7 @@ app.use('/stream', streamRouter);
 app.use('/download', downloadRouter);
 app.use('/info', infoRouter);
 app.use('/search', searchRouter);
+app.use('/devices', devicesRouter);
 
 app.use(errorHandler);
 
