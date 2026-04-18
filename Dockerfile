@@ -1,6 +1,5 @@
 FROM node:20-slim
 
-# Install yt-dlp and ffmpeg (needed for audio conversion to mp3)
 RUN apt-get update && apt-get install -y \
     python3 \
     ffmpeg \
@@ -13,11 +12,13 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
 RUN npm run build
+
+RUN npm prune --omit=dev
 
 EXPOSE 3001
 
