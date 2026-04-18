@@ -48,18 +48,24 @@ function runYtdlp(args: string[], timeoutMs = 30000): Promise<string> {
   });
 }
 
+const YTDLP_BASE_ARGS = [
+  '--no-playlist',
+  '--extractor-args', 'youtube:player_client=ios,web',
+  '--js-runtimes', 'node',
+];
+
 export async function getAudioStreamUrl(videoId: string): Promise<StreamInfo> {
   const url = `https://www.youtube.com/watch?v=${videoId}`;
 
   const [streamUrl, rawJson] = await Promise.all([
     runYtdlp([
-      '--no-playlist',
+      ...YTDLP_BASE_ARGS,
       '--format', 'bestaudio[ext=m4a]/bestaudio',
       '--get-url',
       url,
     ]),
     runYtdlp([
-      '--no-playlist',
+      ...YTDLP_BASE_ARGS,
       '--dump-json',
       '--skip-download',
       url,
@@ -87,7 +93,7 @@ export async function getAudioStreamUrl(videoId: string): Promise<StreamInfo> {
 export async function getVideoInfo(videoId: string): Promise<VideoInfo> {
   const url = `https://www.youtube.com/watch?v=${videoId}`;
   const rawJson = await runYtdlp([
-    '--no-playlist',
+    ...YTDLP_BASE_ARGS,
     '--dump-json',
     '--skip-download',
     url,
