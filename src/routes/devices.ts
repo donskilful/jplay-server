@@ -10,6 +10,8 @@ const DATA_FILE = path.join(DATA_DIR, 'devices.json');
 interface DeviceRecord {
   deviceId: string;
   platform: string;
+  deviceName: string | null;
+  region: string | null;
   registeredAt: string;
 }
 
@@ -28,7 +30,12 @@ function save(records: DeviceRecord[]): void {
 }
 
 router.post('/', (req, res) => {
-  const { deviceId, platform } = req.body as { deviceId?: string; platform?: string };
+  const { deviceId, platform, deviceName, region } = req.body as {
+    deviceId?: string;
+    platform?: string;
+    deviceName?: string | null;
+    region?: string | null;
+  };
 
   if (!deviceId || typeof deviceId !== 'string') {
     res.status(400).json({ error: 'missing_device_id' });
@@ -39,24 +46,43 @@ router.post('/', (req, res) => {
   const existing = records.find(r => r.deviceId === deviceId);
 
   if (!existing) {
-    records.push({ deviceId, platform: platform ?? 'unknown', registeredAt: new Date().toISOString() });
+    records.push({
+      deviceId,
+      platform: platform ?? 'unknown',
+      deviceName: deviceName ?? null,
+      region: region ?? null,
+      registeredAt: new Date().toISOString(),
+    });
     save(records);
   }
 
   res.json({ ok: true, total: records.length, isNew: !existing });
 });
 
-router.get('/stats', (req, res) => {
+router.get('/stats', (_req, res) => {
   const records = load();
+
   const byPlatform = records.reduce<Record<string, number>>((acc, r) => {
     acc[r.platform] = (acc[r.platform] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  const byRegion = records.reduce<Record<string, number>>((acc, r) => {
+    const key = r.region ?? 'unknown';
+    acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {});
 
   res.json({
     total: records.length,
     byPlatform,
-    latest: records.slice(-5).reverse().map(r => ({ platform: r.platform, registeredAt: r.registeredAt })),
+    byRegion,
+    latest: records.slice(-10).reverse().map(r => ({
+      platform: r.platform,
+      deviceName: r.deviceName,
+      region: r.region,
+      registeredAt: r.registeredAt,
+    })),
   });
 });
 
