@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: jplay-server
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: YTDLP_BIN
+        value: /usr/local/bin/yt-dlp
+      - key: YOUTUBE_API_KEY
+        sync: false
