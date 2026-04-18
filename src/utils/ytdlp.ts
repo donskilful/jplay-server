@@ -52,6 +52,7 @@ const YTDLP_BASE_ARGS = [
   '--no-playlist',
   '--extractor-args', 'youtube:player_client=ios,web',
   '--js-runtimes', 'node',
+  '--remote-components', 'ejs:github',
 ];
 
 export async function getAudioStreamUrl(videoId: string): Promise<StreamInfo> {
@@ -60,7 +61,7 @@ export async function getAudioStreamUrl(videoId: string): Promise<StreamInfo> {
   const [streamUrl, rawJson] = await Promise.all([
     runYtdlp([
       ...YTDLP_BASE_ARGS,
-      '--format', 'bestaudio[ext=m4a]/bestaudio',
+      '--format', 'bestaudio[ext=m4a]/bestaudio/best',
       '--get-url',
       url,
     ]),
