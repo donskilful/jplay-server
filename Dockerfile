@@ -24,4 +24,4 @@ RUN npm prune --omit=dev
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "yt-dlp -U || true; node dist/index.js"]
+CMD ["node", "dist/index.js"]
