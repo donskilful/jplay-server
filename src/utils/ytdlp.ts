@@ -1,7 +1,26 @@
 import { spawn } from 'child_process';
 
+import { existsSync } from 'fs';
+import { resolve } from 'path';
+
 // On macOS with pip install, yt-dlp lands here; in Docker it's on PATH
 const YTDLP_BIN = process.env.YTDLP_BIN ?? 'yt-dlp';
+
+// Optional cookies file — set YTDLP_COOKIES to an absolute path or a path
+// relative to the project root. Drop a Netscape-format cookies.txt exported
+// from your browser to bypass YouTube's IP-based rate limiting.
+const COOKIES_PATH = (() => {
+  const raw = process.env.YTDLP_COOKIES;
+  if (!raw) return null;
+  const p = resolve(raw);
+  return existsSync(p) ? p : null;
+})();
+
+if (COOKIES_PATH) {
+  console.log(`[ytdlp] using cookies: ${COOKIES_PATH}`);
+} else if (process.env.YTDLP_COOKIES) {
+  console.warn(`[ytdlp] YTDLP_COOKIES set but file not found: ${process.env.YTDLP_COOKIES}`);
+}
 
 export interface StreamInfo {
   url: string;
@@ -51,6 +70,7 @@ function runYtdlp(args: string[], timeoutMs = 30000): Promise<string> {
 const YTDLP_BASE_ARGS = [
   '--no-playlist',
   '--extractor-args', 'youtube:player_client=tv_embedded,web',
+  ...(COOKIES_PATH ? ['--cookies', COOKIES_PATH] : []),
 ];
 
 export async function getAudioStreamUrl(videoId: string): Promise<StreamInfo> {

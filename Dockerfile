@@ -16,6 +16,8 @@ RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
+# Copy cookies file if present (optional — only committed when needed)
+COPY cookies.tx[t] ./
 RUN npm run build
 
 RUN npm prune --omit=dev

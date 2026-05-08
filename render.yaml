@@ -11,3 +11,6 @@ services:
         value: /usr/local/bin/yt-dlp
       - key: YOUTUBE_API_KEY
         sync: false
+      - key: YTDLP_COOKIES
+        value: /app/cookies.txt
+        sync: false
