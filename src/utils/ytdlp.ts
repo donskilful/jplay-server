@@ -50,7 +50,7 @@ function runYtdlp(args: string[], timeoutMs = 30000): Promise<string> {
 
 const YTDLP_BASE_ARGS = [
   '--no-playlist',
-  '--extractor-args', 'youtube:player_client=ios,web',
+  '--extractor-args', 'youtube:player_client=tv_embedded,web',
 ];
 
 export async function getAudioStreamUrl(videoId: string): Promise<StreamInfo> {
