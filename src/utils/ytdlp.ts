@@ -69,7 +69,7 @@ function runYtdlp(args: string[], timeoutMs = 30000): Promise<string> {
 
 const YTDLP_BASE_ARGS = [
   '--no-playlist',
-  '--extractor-args', 'youtube:player_client=tv_embedded,web',
+  '--extractor-args', 'youtube:player_client=android,web',
   ...(COOKIES_PATH ? ['--cookies', COOKIES_PATH] : []),
 ];
 
